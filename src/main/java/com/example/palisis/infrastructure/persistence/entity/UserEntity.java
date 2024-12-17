@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -26,7 +27,14 @@ public class UserEntity {
     @Column(name = "last_updated")
     private LocalDateTime lastUpdated;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private List<OperationLineEntity> operationLines;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<OperationLineEntity> operationLines = new ArrayList<>();
+
+    public void setOperationLines(List<OperationLineEntity> operationLines) {
+        this.operationLines.clear();
+        if (operationLines != null) {
+            operationLines.forEach(line -> line.setUser(this));
+            this.operationLines.addAll(operationLines);
+        }
+    }
 }

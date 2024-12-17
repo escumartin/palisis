@@ -1,4 +1,4 @@
-package com.example.palisis.application.service;
+package com.example.palisis.domain.service;
 
 import com.example.palisis.application.dto.UserCreateDTO;
 import com.example.palisis.application.dto.UserDTO;

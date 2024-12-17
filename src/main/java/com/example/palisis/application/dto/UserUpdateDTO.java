@@ -24,12 +24,12 @@ public class UserUpdateDTO {
     private String lastName;
 
     @NotBlank(message = "Password cannot be empty or null")
-    @Size(min = 8, max = 100, message = "Password must be between 8 and 100 characters")
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*(),.?\":{}|<>])[A-Za-z\\d!@#$%^&*(),.?\":{}|<>]{8,}$", message = "Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character, and be at least 8 characters long")
+    @Size(min = 12, max = 100, message = "Password must be between 8 and 100 characters")
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*(),.?\":{}|<>])[A-Za-z\\d!@#$%^&*(),.?\":{}|<>]{12,}$", message = "Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character, and be at least 12 characters long")
     private String password;
 
     @NotEmpty(message = "Operation lines cannot be empty")
     @Size(min = 1, message = "At least one operation line must be provided")
-    private List<Long> operationLineIds;
+    private List<OperationLineDTO> operationLines;
 
 }

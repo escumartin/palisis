@@ -1,15 +1,18 @@
-package com.example.palisis.application.service.impl;
+package com.example.palisis.application.service;
 
+import com.example.palisis.application.dto.OperationLineDTO;
 import com.example.palisis.application.dto.UserCreateDTO;
 import com.example.palisis.application.dto.UserDTO;
 import com.example.palisis.application.dto.UserUpdateDTO;
 import com.example.palisis.application.mapper.UserMapper;
-import com.example.palisis.application.service.UserService;
+import com.example.palisis.domain.model.OperationLine;
 import com.example.palisis.domain.model.User;
 import com.example.palisis.domain.repository.UserRepository;
+import com.example.palisis.domain.service.UserService;
 import com.example.palisis.infrastructure.exception.CustomIllegalArgumentException;
 import com.example.palisis.infrastructure.exception.ResourceNotFoundException;
-import lombok.AllArgsConstructor;
+import com.example.palisis.infrastructure.security.PasswordGeneratorService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,20 +20,22 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
+    private final PasswordGeneratorService passwordGeneratorService;
 
     @Transactional
     @Override
     public UserDTO createUser(UserCreateDTO userCreateDTO) {
         validateUserCreate(userCreateDTO);
 
-        String encodedPassword = passwordEncoder.encode(userCreateDTO.getPassword());
+        String rawPassword = passwordGeneratorService.generateSecurePassword(12);
+        String encodedPassword = passwordEncoder.encode(rawPassword);
 
         User user = userMapper.toDomain(userCreateDTO);
         user.setPassword(encodedPassword);
@@ -84,12 +89,35 @@ public class UserServiceImpl implements UserService {
             existingUser.setPassword(encodedPassword);
         }
 
-        if (userUpdateDTO.getName() != null)
+        if (userUpdateDTO.getName() != null) {
             existingUser.setName(userUpdateDTO.getName());
-        if (userUpdateDTO.getLastName() != null)
+        }
+
+        if (userUpdateDTO.getLastName() != null) {
             existingUser.setLastName(userUpdateDTO.getLastName());
+        }
+
+        List<OperationLine> operationLines = mapOperationLines(userUpdateDTO.getOperationLines());
+        existingUser.setOperationLines(operationLines);
 
         existingUser.setLastUpdated(LocalDateTime.now());
+    }
+
+    private List<OperationLine> mapOperationLines(List<OperationLineDTO> operationLineDTOs) {
+        if (operationLineDTOs == null || operationLineDTOs.isEmpty()) {
+            return List.of();
+        }
+
+        return operationLineDTOs.stream()
+                .map(this::mapToOperationLine)
+                .toList();
+    }
+
+    private OperationLine mapToOperationLine(OperationLineDTO operationLineDTO) {
+        if (operationLineDTO == null) {
+            return null;
+        }
+        return new OperationLine(operationLineDTO.getId(), operationLineDTO.getName());
     }
 
     private void validateUserCreate(UserCreateDTO userCreateDTO) {

@@ -1,7 +1,6 @@
 package com.example.palisis.application.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -34,6 +33,6 @@ public class UserDTO {
 
     @NotBlank(message = "Operation lines cannot be null")
     @Size(min = 1, message = "At least one operation line must be provided")
-    private List<Long> operationLineIds;
+    private List<OperationLineDTO> operationLines;
 
 }

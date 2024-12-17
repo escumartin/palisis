@@ -4,13 +4,13 @@ import com.example.palisis.application.mapper.OperationLineMapper;
 import com.example.palisis.domain.model.OperationLine;
 import com.example.palisis.domain.repository.OperationLineRepository;
 import com.example.palisis.infrastructure.persistence.repository.OperationLineRepositoryJpa;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Repository
 public class OperationLineRepositoryAdapter implements OperationLineRepository {
 
@@ -26,7 +26,7 @@ public class OperationLineRepositoryAdapter implements OperationLineRepository {
 
     @Override
     public List<OperationLine> findAll() {
-        return operationLineMapper.toDomainList(operationLineRepositoryJpa.findAll());
+        return operationLineMapper.toDomainFromEntityList(operationLineRepositoryJpa.findAll());
     }
 
     @Override

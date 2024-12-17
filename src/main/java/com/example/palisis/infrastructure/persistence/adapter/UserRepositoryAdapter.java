@@ -5,13 +5,13 @@ import com.example.palisis.domain.model.User;
 import com.example.palisis.domain.repository.UserRepository;
 import com.example.palisis.infrastructure.persistence.entity.UserEntity;
 import com.example.palisis.infrastructure.persistence.repository.UserRepositoryJpa;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Repository
 public class UserRepositoryAdapter implements UserRepository {
 

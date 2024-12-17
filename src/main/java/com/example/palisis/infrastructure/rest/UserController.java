@@ -1,23 +1,23 @@
-package com.example.palisis.infrastructure.controller;
+package com.example.palisis.infrastructure.rest;
 
 import com.example.palisis.application.dto.UserCreateDTO;
 import com.example.palisis.application.dto.UserDTO;
 import com.example.palisis.application.dto.UserUpdateDTO;
-import com.example.palisis.application.service.impl.UserServiceImpl;
+import com.example.palisis.application.service.UserServiceImpl;
 import com.example.palisis.infrastructure.exception.CustomIllegalArgumentException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/users")
 public class UserController {
