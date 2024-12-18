@@ -3,7 +3,9 @@ package com.example.palisis.infrastructure.persistence.adapter;
 import com.example.palisis.application.mapper.UserMapper;
 import com.example.palisis.domain.model.User;
 import com.example.palisis.domain.repository.UserRepository;
+import com.example.palisis.infrastructure.persistence.entity.OperationLineEntity;
 import com.example.palisis.infrastructure.persistence.entity.UserEntity;
+import com.example.palisis.infrastructure.persistence.repository.OperationLineRepositoryJpa;
 import com.example.palisis.infrastructure.persistence.repository.UserRepositoryJpa;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -16,12 +18,22 @@ import java.util.Optional;
 public class UserRepositoryAdapter implements UserRepository {
 
     private final UserRepositoryJpa userRepositoryJpa;
+    private final OperationLineRepositoryJpa operationLineRepositoryJpa;
     private final UserMapper userMapper;
 
     @Override
     public User save(User user) {
         UserEntity userEntity = userMapper.toEntity(user);
+
+        List<OperationLineEntity> operationLineEntities = user.getOperationLines().stream()
+                .map(operationLine -> operationLineRepositoryJpa.findById(operationLine.getId())
+                        .orElseThrow(() -> new RuntimeException("OperationLine not found: " + operationLine.getId())))
+                .toList();
+
+        userEntity.setOperationLines(operationLineEntities);
+
         UserEntity savedUserEntity = userRepositoryJpa.save(userEntity);
+
         return userMapper.toDomain(savedUserEntity);
     }
 

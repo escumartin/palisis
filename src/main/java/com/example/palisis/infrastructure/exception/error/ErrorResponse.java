@@ -1,16 +1,29 @@
 package com.example.palisis.infrastructure.exception.error;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@EqualsAndHashCode
-@Data
+import java.util.List;
+
+@Getter
 public class ErrorResponse {
 
-    private int status;
-    private String message;
+    private final int statusCode;
+    private final String message;
+    private final String detailedMessage;
+    private final List<String> fieldErrors;
+
+    public ErrorResponse(int statusCode, String message, String detailedMessage) {
+        this.statusCode = statusCode;
+        this.message = message;
+        this.detailedMessage = detailedMessage;
+        this.fieldErrors = null;
+    }
+
+    public ErrorResponse(int statusCode, String message, List<String> fieldErrors) {
+        this.statusCode = statusCode;
+        this.message = message;
+        this.detailedMessage = null;
+        this.fieldErrors = fieldErrors;
+    }
+
 }

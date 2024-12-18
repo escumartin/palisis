@@ -7,6 +7,7 @@ import com.example.palisis.application.dto.UserUpdateDTO;
 import com.example.palisis.application.mapper.UserMapper;
 import com.example.palisis.domain.model.OperationLine;
 import com.example.palisis.domain.model.User;
+import com.example.palisis.domain.repository.OperationLineRepository;
 import com.example.palisis.domain.repository.UserRepository;
 import com.example.palisis.domain.service.UserService;
 import com.example.palisis.infrastructure.exception.CustomIllegalArgumentException;
@@ -25,6 +26,7 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final OperationLineRepository operationLineRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
     private final PasswordGeneratorService passwordGeneratorService;
@@ -42,9 +44,23 @@ public class UserServiceImpl implements UserService {
         user.setCreated(LocalDateTime.now());
         user.setLastUpdated(LocalDateTime.now());
 
+        List<OperationLine> operationLines = getOperationLinesFromDTO(userCreateDTO.getOperationLines());
+        user.setOperationLines(operationLines);
+
         User savedUser = userRepository.save(user);
 
         return userMapper.toDTO(savedUser);
+    }
+
+    private List<OperationLine> getOperationLinesFromDTO(List<OperationLineDTO> operationLineDTOs) {
+        if (operationLineDTOs == null || operationLineDTOs.isEmpty()) {
+            return List.of();
+        }
+
+        return operationLineDTOs.stream()
+                .map(dto -> operationLineRepository.findById(dto.getId())
+                        .orElseThrow(() -> new ResourceNotFoundException("OperationLine not found")))
+                .toList();
     }
 
     @Transactional

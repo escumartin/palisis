@@ -33,9 +33,6 @@ public class UserController {
     })
     @PostMapping
     public ResponseEntity<UserDTO> createUser(@RequestBody @Valid UserCreateDTO userCreateDTO) {
-        if (userCreateDTO == null) {
-            throw new IllegalArgumentException("UserCreateDTO cannot be null");
-        }
         UserDTO createdUser = userService.createUser(userCreateDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
@@ -52,9 +49,6 @@ public class UserController {
     public ResponseEntity<UserDTO> updateUser(
             @PathVariable @Parameter(description = "ID of the user to update", example = "1") Long userId,
             @RequestBody @Valid UserUpdateDTO userUpdateDTO) {
-        if (userUpdateDTO == null) {
-            throw new IllegalArgumentException("UserUpdateDTO cannot be null");
-        }
         UserDTO updatedUser = userService.updateUser(userId, userUpdateDTO);
         return ResponseEntity.ok(updatedUser);
     }
